@@ -1,47 +1,44 @@
-﻿using System;
+using System;
 using AgentHelper;
+using NeuralNetworks;
 
 namespace EvolutionaryOptimization
 {
     public class Individual : IComparable<Individual>
     {
-        public double[] Chromosome;
-        public double Fitness;
-        private int _numberOfChromosomes;
-        private double _minumumChromosome;
-        private double _maximumChromosome;
-        private double _mutateRate;
-        private double _precision;
+        public float[] Chromosome;
+        public float Fitness;
+        private float _maximumChromosome;
+        private float _mutateRate;
+        private float _precision;
         static Random _rnd = new Random(0);
-        public Individual(int numberOfChromosomes, double minumumChromosome, double maximumChromosome, double mutateRate, double precision)
+        public Individual(int numberOfChromosomes, float minumumChromosome, float maximumChromosome, float mutateRate, float precision)
         {
-            _numberOfChromosomes = numberOfChromosomes;
-            _minumumChromosome = minumumChromosome;
             _maximumChromosome = maximumChromosome;
             _mutateRate = mutateRate;
             _precision = precision;
-            Chromosome = new double[numberOfChromosomes];
+            Chromosome = new float[numberOfChromosomes];
 
             for (int i = 0; i < Chromosome.Length; ++i)
-                Chromosome[i] = (maximumChromosome - minumumChromosome) * _rnd.NextDouble() + minumumChromosome;
+                Chromosome[i] = (maximumChromosome - minumumChromosome) * (float)_rnd.NextDouble() + minumumChromosome;
 
             Fitness = Problem.Fitness(Chromosome);
         }
         public void Mutate()
         {
-            double hi = _precision * _maximumChromosome;
-            double lo = -hi;
+            float hi = _precision * _maximumChromosome;
+            float lo = -hi;
 
             for (int i = 0; i < Chromosome.Length; ++i)
             {
                 if (_rnd.NextDouble() < _mutateRate)
-                    Chromosome[i] += (hi - lo) * _rnd.NextDouble() + lo;
+                    Chromosome[i] += (hi - lo) * (float)_rnd.NextDouble() + lo;
             }
         }
         public int CompareTo(Individual other)
         {
-            if (Fitness < other.Fitness) return -1;
-            else if (Fitness > other.Fitness) return 1;
+            if (Fitness > other.Fitness) return -1;
+            else if (Fitness < other.Fitness) return 1;
             else return 0;
         }
     }
@@ -50,15 +47,15 @@ namespace EvolutionaryOptimization
         private int _populationSize;
         private Individual[] _population;
         private int _numberOfChromosomes;
-        private double _minimumChromosome;
-        private double _maximumChromosome;
-        private double _mutateRate;
-        private double _precision;
-        private double _tau;
+        private float _minimumChromosome;
+        private float _maximumChromosome;
+        private float _mutateRate;
+        private float _precision;
+        private float _tau;
         private int[] _indices;
         private int _maximumGenerations;
         private static Random _rnd = null;
-        public Evolver(int populationSize, int numberOfChromosomes, double minimumChromosome, double maximumChromosome, double mutateRate, double precision, double tau, int maximumGenerations)
+        public Evolver(int populationSize, int numberOfChromosomes, float minimumChromosome, float maximumChromosome, float mutateRate, float precision, float tau, int maximumGenerations)
         {
             _populationSize = populationSize;
             _population = new Individual[populationSize];
@@ -80,10 +77,10 @@ namespace EvolutionaryOptimization
             _maximumGenerations = maximumGenerations;
             _rnd = new Random(0);
         }
-        public double[] Evolve()
+        public float[] Evolve()
         {
-            double bestFitness = _population[0].Fitness;
-            double[] bestChomosome = new double[_numberOfChromosomes];
+            float bestFitness = _population[0].Fitness;
+            float[] bestChomosome = new float[_numberOfChromosomes];
 
             _population[0].Chromosome.CopyTo(bestChomosome, 0);
 
