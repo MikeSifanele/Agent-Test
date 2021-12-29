@@ -50,24 +50,24 @@ namespace EvolutionaryOptimization
         private int _populationSize;
         private Individual[] _population;
         private int _numberOfChromosomes;
-        private double _minumumChromosome;
+        private double _minimumChromosome;
         private double _maximumChromosome;
         private double _mutateRate;
         private double _precision;
         private double _tau;
         private int[] _indices;
-        private int _maxumumGenerations;
+        private int _maximumGenerations;
         private static Random _rnd = null;
-        public Evolver(int populationSize, int numberOfChromosomes, double minumumChromosome, double maximumChromosome, double mutateRate, double precision, double tau, int maxumumGenerations)
+        public Evolver(int populationSize, int numberOfChromosomes, double minimumChromosome, double maximumChromosome, double mutateRate, double precision, double tau, int maximumGenerations)
         {
             _populationSize = populationSize;
             _population = new Individual[populationSize];
 
             for (int i = 0; i < _population.Length; ++i)
-                _population[i] = new Individual(numberOfChromosomes, minumumChromosome, maximumChromosome, mutateRate, precision);
+                _population[i] = new Individual(numberOfChromosomes, minimumChromosome, maximumChromosome, mutateRate, precision);
 
             _numberOfChromosomes = numberOfChromosomes;
-            _minumumChromosome = minumumChromosome;
+            _minimumChromosome = minimumChromosome;
             _maximumChromosome = maximumChromosome;
             _mutateRate = mutateRate;
             _precision = precision;
@@ -77,7 +77,7 @@ namespace EvolutionaryOptimization
             for (int i = 0; i < _indices.Length; ++i)
                 _indices[i] = i;
 
-            _maxumumGenerations = maxumumGenerations;
+            _maximumGenerations = maximumGenerations;
             _rnd = new Random(0);
         }
         public double[] Evolve()
@@ -89,7 +89,7 @@ namespace EvolutionaryOptimization
 
             int generation = 0;
 
-            while (generation < _maxumumGenerations)
+            while (generation < _maximumGenerations)
             {
                 Individual[] parents = Select(2);
                 Individual[] children = Reproduce(parents[0], parents[1]);
@@ -146,8 +146,8 @@ namespace EvolutionaryOptimization
         {
             int cross = _rnd.Next(0, _numberOfChromosomes - 1);
 
-            Individual child1 = new Individual(_numberOfChromosomes, _minumumChromosome, _maximumChromosome, _mutateRate, _precision);
-            Individual child2 = new Individual(_numberOfChromosomes, _minumumChromosome, _maximumChromosome, _mutateRate, _precision);
+            Individual child1 = new Individual(_numberOfChromosomes, _minimumChromosome, _maximumChromosome, _mutateRate, _precision);
+            Individual child2 = new Individual(_numberOfChromosomes, _minimumChromosome, _maximumChromosome, _mutateRate, _precision);
 
             for (int i = 0; i <= cross; ++i)
                 child1.Chromosome[i] = parent1.Chromosome[i];
@@ -176,14 +176,14 @@ namespace EvolutionaryOptimization
         }
         private void Immigrate()
         {
-            Individual immigrant = new Individual(_numberOfChromosomes, _minumumChromosome, _maximumChromosome, _mutateRate, _precision);
+            Individual immigrant = new Individual(_numberOfChromosomes, _minimumChromosome, _maximumChromosome, _mutateRate, _precision);
 
             _population[_populationSize - 3] = immigrant;
         }
     }
     public class Problem
     {
-        public static double Fitness(double[] chromosome)
+        public static double Fitness(double[] chromosomes)
         {
             int reward = 0;
 
