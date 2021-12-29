@@ -80,6 +80,7 @@ namespace Agent_Test
         private int _index;
         #endregion
         #region Public properties
+        public int CurrentStepIndex => _index - _observationLength;
         public bool IsLastStep => _index == MaximumRates;
         public int MaximumRates => _rates.Length - _rewardLength;
         public int MaximumRewards => MaximumRates - _observationLength;
