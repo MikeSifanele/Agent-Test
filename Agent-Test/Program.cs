@@ -14,21 +14,6 @@ namespace Agent_Test
         {
             Console.Title = "ML Trader";
 
-            using (var streamReader = new StreamReader(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\rates_vp.csv"))
-            {
-                List<Rates> rates = new List<Rates>();
-
-                _ = streamReader.ReadLine();
-
-                while (!streamReader.EndOfStream)
-                {
-                    rates.Add(new Rates(streamReader.ReadLine().Split(',')));
-                }
-
-                _rates = rates.ToArray();
-            }
-
-
             while (!MLTrader.Instance.IsLastStep)
             {
 
@@ -89,61 +74,37 @@ namespace Agent_Test
     {
         #region Private fields
         private Rates[] _rates;
-        private int _rewardLength = 1;
-        private int _ratesLength;
-        #endregion
-        #region Public fields
-        public int Index;
+        private readonly int _rewardLength = 1;
+        private readonly int _observationLength = 50;
+        private int _index;
         #endregion
         #region Public properties
-        public bool IsLastStep
-        {
-            get { return Index == _ratesLength; }
-        }
+        public bool IsLastStep => _index == MaximumRates;
+        public int MaximumRates => _rates.Length - _rewardLength;
+        public int MaximumRewards => MaximumRates - _observationLength;
         #endregion
         private static MLTrader _instance;        
-        public static MLTrader Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new MLTrader();
-
-                return _instance;
-            }
-            set { _instance = value; }
-        }
+        public static MLTrader Instance => _instance ?? (_instance = new MLTrader());
         public MLTrader()
         {
-            _rates = new Rates[0];
+            using (var streamReader = new StreamReader(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\rates_rates.csv"))
+            {
+                List<Rates> rates = new List<Rates>();
 
-            _ratesLength = _rates.Length - _rewardLength;
+                _ = streamReader.ReadLine();
+
+                while (!streamReader.EndOfStream)
+                {
+                    rates.Add(new Rates(streamReader.ReadLine().Split(',')));
+                }
+
+                _rates = rates.ToArray();
+            }
+
             Reset();
         }
-        public float[] GetObservation()
-        {
-            return _rates[Index].ToFloat();
-        }
-        public float GetReward(int[] action)
-        {
-            int profit = GetPoints(action: action[0], _rates[Index + 1].Open, _rates[Index + 1].Close);
-
-            int drawDown = GetPoints(action[0], _rates[Index+1].Open, action[0] == 0? _rates[Index+1].Low: _rates[Index+1].High);
-
-            int risk = action[1] - drawDown;
-
-            return risk < 1? -(drawDown + profit): drawDown + profit;
-        }
-        public void Reset()
-        {
-            Index = 0;
-        }        
-        private int GetPoints(int action, float openPrice, float closePrice)
-        {
-            if(action == 0)
-                return (int)((closePrice - openPrice) * 10);
-            else
-                return (int)((openPrice - closePrice) * 10);
-        }
+        public float[] GetObservation() => _rates[_index++].ToFloat();
+        public float GetReward(int action) => action == (int)_rates[_index].Signal.Value ? 1 : -1;
+        public void Reset() => _index = _observationLength;
     }
 }
