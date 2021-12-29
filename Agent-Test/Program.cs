@@ -1,22 +1,24 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
+using AgentHelper;
 
 namespace Agent_Test
 {
     internal class Program
     {
-        private static Rates[] _rates;
+        private static Random _random = new Random();
         static void Main(string[] args)
         {
             Console.Title = "ML Trader";
+            int reward = 0;
 
             while (!MLTrader.Instance.IsLastStep)
             {
-
+                _ = MLTrader.Instance.GetObservation();
+                reward += MLTrader.Instance.GetReward(action: _random.Next((int)SignalEnum.Count));
             }
 
             Console.WriteLine($"Randomly scored: {reward}/{MLTrader.Instance.MaximumRewards}");
