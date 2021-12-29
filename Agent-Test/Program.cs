@@ -104,8 +104,19 @@ namespace Agent_Test
 
             Reset();
         }
-        public float[] GetObservation() => _rates[_index++].ToFloat();
-        public float GetReward(int action) => action == (int)_rates[_index].Signal.Value ? 1 : -1;
+        public float[] GetObservation()
+        {
+            List<float> observation = new List<float>();
+
+            for (int i = _index; i >= _index - _observationLength; i--)
+                observation.AddRange(_rates[i].ToFloat());
+
+            _index++;
+
+            return observation.ToArray();
+        }
+
+        public int GetReward(int action) => action == (int)_rates[_index].Signal.Value ? 1 : -1;
         public void Reset() => _index = _observationLength;
     }
 }
