@@ -1,4 +1,6 @@
 ﻿using System;
+using AgentHelper;
+using Enums;
 
 namespace NeuralNetworks
 {
@@ -6,9 +8,13 @@ namespace NeuralNetworks
     {
         private static float[] _inputWeights;
         private static float[] _outputWeights;
+        public static string[] Train()
+        {
+            return default;
+        }
         public static string[] Evaluate()
         {
-            return null;
+            return default;
         }
         public static int Predict(float[] inputData)
         {
@@ -27,16 +33,16 @@ namespace NeuralNetworks
                 return 0;
             }
         }
-        public static float[] GetWeights(string layerName = "input")
+        public static float[] GetWeights(LayersEnum layerName)
         {
-            if (layerName == "input")
+            if (layerName == LayersEnum.Input)
                 return _inputWeights;
             else
                 return _outputWeights;
         }
-        public static void SetWeights(float[] weights, string layerName = "input")
+        public static void SetWeights(float[] weights, LayersEnum layerName)
         {
-            if (layerName == "input")
+            if (layerName == LayersEnum.Input)
                 _inputWeights = weights;
             else
                 _outputWeights = weights;

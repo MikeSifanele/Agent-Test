@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Enums;
 
 namespace AgentHelper
 {
@@ -45,16 +46,7 @@ namespace AgentHelper
             else
                 Value = SignalEnum.Neutral;
         }
-    }
-    public enum SignalEnum
-    {
-        Neutral = 0,
-        FastValley = 1,
-        SlowValley = 2,
-        FastPeak = 3,
-        SlowPeak = 4,
-        Count
-    }
+    }    
     public class MLTrader
     {
         #region Private fields
