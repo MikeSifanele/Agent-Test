@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="AgentHelper.cs" />
     <Compile Include="EvolutionaryOptimization.cs" />
+    <Compile Include="NeuralNetwork.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
