@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -68,7 +68,8 @@ namespace Agent_Test
         FastValley = 1,
         SlowValley = 2,
         FastPeak = 3,
-        SlowPeak = 4
+        SlowPeak = 4,
+        Count
     }
     public class MLTrader
     {
