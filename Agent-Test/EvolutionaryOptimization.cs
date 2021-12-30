@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using AgentHelper;
 using NeuralNetworks;
+using Enums;
 
 namespace EvolutionaryOptimization
 {
@@ -96,8 +97,12 @@ namespace EvolutionaryOptimization
 
                 for (int i = _populationSize - 3; i < _populationSize; ++i)
                 {
-                    if (_population[i].Fitness < bestFitness)
+                    if (_population[i].Fitness > bestFitness)
                     {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"Generation: {generation}, Best fitness: {bestFitness}");
+                        Console.ForegroundColor = ConsoleColor.White;
+
                         bestFitness = _population[i].Fitness;
                         _population[i].Chromosome.CopyTo(bestChomosome, 0);
                     }
