@@ -45,6 +45,9 @@ namespace EvolutionaryOptimization
     }
     public class Evolver
     {
+        public delegate void WriteToConsoleHandler(string message);
+        public static event WriteToConsoleHandler WriteToConsole;
+
         private int _populationSize;
         private Individual[] _population;
         private int _numberOfChromosomes;
@@ -99,9 +102,7 @@ namespace EvolutionaryOptimization
                 {
                     if (_population[i].Fitness > bestFitness)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"Generation: {generation}, Best fitness: {bestFitness}");
-                        Console.ForegroundColor = ConsoleColor.White;
+                        WriteToConsole?.Invoke($"Generation: {generation}, Best fitness: {bestFitness}");                        
 
                         bestFitness = _population[i].Fitness;
                         _population[i].Chromosome.CopyTo(bestChomosome, 0);

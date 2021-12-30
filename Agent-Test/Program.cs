@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +24,12 @@ namespace Agent_Test
             Console.WriteLine($"Randomly scored: {reward}/{MLTrader.Instance.MaximumRewards}");
 
             Console.ReadKey();
+        }
+        private static void Evolver_WriteToConsole(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
