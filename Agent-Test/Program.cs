@@ -25,10 +25,10 @@ namespace Agent_Test
 
             Console.ReadKey();
         }
-        private static void Evolver_WriteToConsole(string message)
+        private static void Evolver_WriteToConsole(string message, ConsoleColor consoleColor)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(message);
+            Console.ForegroundColor = consoleColor;
+            Console.WriteLine($"{DateTime.Now}: {message}");
             Console.ForegroundColor = ConsoleColor.White;
         }
     }

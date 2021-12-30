@@ -2,6 +2,8 @@
 using AgentHelper;
 using NeuralNetworks;
 using Enums;
+using System.Globalization;
+using System.IO;
 
 namespace EvolutionaryOptimization
 {
@@ -45,7 +47,7 @@ namespace EvolutionaryOptimization
     }
     public class Evolver
     {
-        public delegate void WriteToConsoleHandler(string message);
+        public delegate void WriteToConsoleHandler(string message, ConsoleColor consoleColor);
         public static event WriteToConsoleHandler WriteToConsole;
 
         private int _populationSize;
@@ -102,11 +104,21 @@ namespace EvolutionaryOptimization
                 {
                     if (_population[i].Fitness > bestFitness)
                     {
-                        WriteToConsole?.Invoke($"Generation: {generation}, Best fitness: {bestFitness}");                        
+                        WriteToConsole?.Invoke($"Generation: {generation}, Best fitness: {bestFitness.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}/{MLTrader.Instance.MaximumRewards.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}", ConsoleColor.Green);
+
+                        using (var streamWriter = new StreamWriter("best solution.csv", append: true))
+                        {
+                            streamWriter.Write($"Score: {bestFitness.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}");
+
+                            for (int j = 0; j < _population[i].Chromosome.Length; ++j)
+                                streamWriter.Write($",{_population[i].Chromosome[j]}");
+                        }
 
                         bestFitness = _population[i].Fitness;
                         _population[i].Chromosome.CopyTo(bestChomosome, 0);
                     }
+                    else
+                        WriteToConsole?.Invoke($"Generation: {generation}, Fitness: {_population[i].Fitness.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}/{MLTrader.Instance.MaximumRewards.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}", ConsoleColor.Red);
                 }
                 ++generation;
             }
