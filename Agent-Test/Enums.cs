@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Enums
 {
-    public enum LayersEnum
+    public enum LayerEnum
     {
+        Undefined,
         Input,
         Output,
     }

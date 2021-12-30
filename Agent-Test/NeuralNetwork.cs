@@ -6,23 +6,25 @@ namespace NeuralNetworks
 {
     public static class NeuralNetwork
     {
-        private static float[] _inputWeights;
-        private static float[] _outputWeights;
+        private static Layer _inputLayer = new Layer();
+        private static Layer _outputLayer = new Layer();
         public static string[] Train()
         {
             return default;
         }
         public static string[] Evaluate()
         {
+
+
             return default;
         }
         public static int Predict(float[] inputData)
         {
             try
             {
-                var inputLayer = Vector.Multiply(inputData, _inputWeights);
+                var inputLayer = Vector.Multiply(inputData, _inputLayer.Weights);
 
-                var outputLayer = Vector.Multiply(inputLayer, _outputWeights);
+                var outputLayer = Vector.Multiply(inputLayer, _outputLayer.Weights);
 
                 var probabilities = Activation.Softmax(outputLayer);
 
@@ -33,42 +35,65 @@ namespace NeuralNetworks
                 return 0;
             }
         }
-        public static float[] GetWeights(LayersEnum layerName)
+        public static float[] GetWeights(LayerEnum layerName)
         {
-            if (layerName == LayersEnum.Input)
-                return _inputWeights;
+            if (layerName == LayerEnum.Input)
+                return _inputLayer.Weights;
             else
-                return _outputWeights;
+                return _outputLayer.Weights;
         }
-        public static void SetWeights(float[] weights, LayersEnum layerName)
+        public static void SetWeights(float[] weights, LayerEnum layerName)
         {
-            if (layerName == LayersEnum.Input)
-                _inputWeights = weights;
+            if (layerName == LayerEnum.Input)
+                _inputLayer.Weights = weights;
             else
-                _outputWeights = weights;
+                _outputLayer.Weights = weights;
+        }
+        public static void InitializeWeights(int numberOfNodes, LayerEnum layerName)
+        {
+            if (layerName == LayerEnum.Input)
+                _inputLayer.InitializeWeights(numberOfNodes);
+            else
+                _outputLayer.InitializeWeights(numberOfNodes);
+        }
+        public static bool IsLayerTrained(LayerEnum layerName)
+        {
+            return layerName == LayerEnum.Input ? _inputLayer.IsTrained : _outputLayer.IsTrained;
+        }
+    }
+    public class Layer
+    {
+        public bool IsTrained;
+        public float[] Weights;
+        public void InitializeWeights(int numberOfNodes, int minimumWeight = -1, int maximumWeight = 1)
+        {
+            Random rnd = new Random(0);
+            Weights = new float[numberOfNodes];
+
+            for (int i = 0; i < Weights.Length; ++i)
+                Weights[i] = (maximumWeight - minimumWeight) * (float)rnd.NextDouble() + minimumWeight;
         }
     }
     public static class Vector
     {
         public static float[] Multiply(float[] vector1, float[] vector2)
         {
+            int i = 0;
+
             try
             {
-                if (vector1.Length != vector2.Length)
-                    return null;
+                var results = new float[vector2.Length];
 
-                var results = new float[vector1.Length];
-
-                for (int i = 0; i < vector1.Length; i++)
+                for (; i < results.Length; i++)
                 {
-                    results[i] = vector1[i] * vector2[i];
+                    results[i] = Sum(Multiply(vector1, vector2[i]));
                 }
 
                 return results;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
+                throw new Exception($"Error:\n\tVector->V2V Multiply| index: {i}, array1 size: {vector1.Length}, array2 size: {vector2.Length}.\n\tMessage: {ex.Message}.");
             }
         }
         public static float[] Multiply(float[] vector, float value)
@@ -130,20 +155,22 @@ namespace NeuralNetworks
         }
         public static float Sum(float[] vector)
         {
+            int i = 0;
+
             try
             {
                 float sum = 0;
 
-                for (int i = 0; i < vector.Length; i++)
+                for (; i < vector.Length; i++)
                 {
                     sum += vector[i];
                 }
 
                 return sum;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return 0f;
+                throw new Exception($"Error:\n\tVector->Sum| index: {i}, array size: {vector.Length}.\n\tMessage: {ex.Message}.");
             }
         }
         public static float Minimum(float[] vector)
