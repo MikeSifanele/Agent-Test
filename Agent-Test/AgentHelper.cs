@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Enums;
@@ -60,6 +60,7 @@ namespace AgentHelper
         public bool IsLastStep => _index == MaximumRates;
         public int MaximumRates => _rates.Length - _rewardLength;
         public int MaximumRewards => MaximumRates - _observationLength;
+        public int Target => (int)_rates[_index].Signal.Value;
         #endregion
         private static MLTrader _instance;
         public static MLTrader Instance => _instance ?? (_instance = new MLTrader());
