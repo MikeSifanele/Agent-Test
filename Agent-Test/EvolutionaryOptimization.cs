@@ -180,18 +180,48 @@ namespace EvolutionaryOptimization
     }
     public class Problem
     {
-        public static double Fitness(double[] chromosomes)
+        public static float Fitness(float[] chromosomes)
         {
             int reward = 0;
+            int action;
+
+            NeuralNetwork.SetWeights(GetLayerWeights(chromosomes, LayerEnum.Input), LayerEnum.Input);
+            NeuralNetwork.SetWeights(GetLayerWeights(chromosomes, LayerEnum.Output), LayerEnum.Output);
+
+            MLTrader.Instance.Reset();
 
             while (!MLTrader.Instance.IsLastStep)
             {
-                _ = MLTrader.Instance.GetObservation();
+                action = NeuralNetwork.Predict(MLTrader.Instance.GetObservation());
 
-                reward += MLTrader.Instance.GetReward(action: 0);
+                reward += MLTrader.Instance.GetReward(action: action);
             }
 
             return reward;
+        }
+        private static float[] GetLayerWeights(float[] chromosomes, LayerEnum layerName)
+        {
+            int start, end, j = 0;
+
+            if(layerName == LayerEnum.Input)
+            {
+                start = 0;
+                end = 204;
+            }
+            else
+            {
+                start = 204;
+                end = start + 5;
+            }
+
+            var results = new float[end - start];
+
+            for (int i = start; i < end; i++)
+            {
+                results[j++] = chromosomes[i];
+            }
+
+            return results;
         }
     }
 }
