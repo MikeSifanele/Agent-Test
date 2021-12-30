@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using Enums;
@@ -94,7 +94,51 @@ namespace AgentHelper
             return observation.ToArray();
         }
 
-        public int GetReward(int action) => action == (int)_rates[_index].Signal.Value ? 1 : -1;
+        public int GetReward(int action)
+        {
+            SignalEnum signal = _rates[_index].Signal.Value;
+
+            switch((SignalEnum)action)
+            {
+                case SignalEnum.FastPeak:
+                    if (signal == SignalEnum.FastValley)
+                        return -10;
+                    else if (signal == SignalEnum.SlowValley)
+                        return -100;
+                    break;
+                case SignalEnum.FastValley:
+                    if (signal == SignalEnum.FastPeak)
+                        return -10;
+                    else if (signal == SignalEnum.SlowPeak)
+                        return -100;
+                    break;
+                case SignalEnum.SlowPeak:
+                    if (signal == SignalEnum.FastValley)
+                        return -10;
+                    else if (signal == SignalEnum.SlowValley)
+                        return -100;
+                    break;
+                case SignalEnum.SlowValley:
+                    if (signal == SignalEnum.FastPeak)
+                        return -10;
+                    else if (signal == SignalEnum.SlowPeak)
+                        return -100;
+                    break;
+                case SignalEnum.Neutral:
+                    if (signal == SignalEnum.FastPeak)
+                        return -10;
+                    else if (signal == SignalEnum.SlowPeak)
+                        return -100;
+                    else if (signal == SignalEnum.FastValley)
+                        return -10;
+                    else if (signal == SignalEnum.SlowValley)
+                        return -100;
+                    break;
+            }
+
+            return 1;
+        }
+
         public void Reset() => _index = _observationLength;
     }
 }
