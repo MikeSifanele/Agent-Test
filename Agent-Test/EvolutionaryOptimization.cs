@@ -100,22 +100,22 @@ namespace EvolutionaryOptimization
                 Accept(children[0], children[1]);
                 Immigrate();
 
-                for (int i = _populationSize - 3; i < _populationSize; ++i)
+                for (int i = _populationSize - 3; i < _populationSize; i++)
                 {
                     if (_population[i].Fitness > bestFitness)
                     {
+                        bestFitness = _population[i].Fitness;
+                        _population[i].Chromosome.CopyTo(bestChomosome, 0);
+
                         WriteToConsole?.Invoke($"Generation: {generation}, Best fitness: {bestFitness.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}/{MLTrader.Instance.MaximumRewards.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}", ConsoleColor.Green);
 
                         using (var streamWriter = new StreamWriter("best solution.csv", append: true))
                         {
                             streamWriter.Write($"Score: {bestFitness.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}");
 
-                            for (int j = 0; j < _population[i].Chromosome.Length; ++j)
-                                streamWriter.Write($",{_population[i].Chromosome[j]}");
+                            for (int j = 0; j < bestChomosome.Length; j++)
+                                streamWriter.Write($",{bestChomosome[j]}");
                         }
-
-                        bestFitness = _population[i].Fitness;
-                        _population[i].Chromosome.CopyTo(bestChomosome, 0);
                     }
                     else
                         WriteToConsole?.Invoke($"Generation: {generation}, Fitness: {_population[i].Fitness.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}/{MLTrader.Instance.MaximumRewards.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"))}", ConsoleColor.Red);
